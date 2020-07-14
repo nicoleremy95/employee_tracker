@@ -1,6 +1,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer")
 
+const mysqlSelect = "SELECT * FROM ??"; 
+
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -150,8 +152,16 @@ function addEmployee(){
 }
 
 function viewDepartment(){
-    console.log("view dept")
-    askUser();
+    connection.query(
+       "SELECT * FROM departments", function (err, res){
+           if (err) throw err;
+           console.log("==============================")
+           console.table(res)
+           console.log("==============================")
+           askUser();
+       }
+    )
+    
 }
 
 function viewRoles(){
