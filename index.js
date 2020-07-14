@@ -84,8 +84,33 @@ function addDepartment(){
 }
 
 function addRole(){
-    console.log("add role")
-    askUser();
+    inquirer.prompt([
+        {
+              type: "input",
+              name: "roleTitle",
+              message: "What is the name of the role you would like to add?"
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "What is the salary of this role?"
+        },
+        {
+            type: "input",
+            name: "departmentId",
+            message: "what is the department id for this role?"
+        }
+    ]).then(answers=>{
+        connection.query(
+          "INSERT INTO roles SET ?",
+          {
+              title: answers.roleTitle,
+              salary: answers.salary,
+              department_id: answers.departmentId
+          }
+        ) 
+        askUser();
+    }) 
 }
 
 function addEmployee(){
