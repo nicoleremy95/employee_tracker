@@ -1,7 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer")
 
-const itemArray = [];
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -14,7 +13,7 @@ var connection = mysql.createConnection({
   
     // Your password
     password: "password",
-    database: "greatbay_db"
+    database: "employees_db"
   });
   
   connection.connect(function(err) {
@@ -29,7 +28,7 @@ var connection = mysql.createConnection({
             type: "list",
             name: "userChoice",
             message: "what would yo like to do?",
-            choices: ["View all Employees", "View by department", "View employees by manager", "Add employee", "Remove Employee", "Update Employee", "exit"]
+            choices: ["ADD DEPARTMENT", "ADD ROLE", "ADD EMPLOYEE", "VIEW DEPARTMENTS", "VIEW ROLES", "VIEW EMPLOYEES", "UPDATE EMPLOYEE ROLES", "EXIT"]
 
         }
         ).then (function ({userChoice}){
@@ -38,53 +37,74 @@ var connection = mysql.createConnection({
                 default:
                     console.log("done for now")
                     break;
-                case "View all Employees":
-                    viewEmployees();
+                case "ADD DEPARTMENT":
+                    addDepartment();
                     break;
-                case "View by department":
-                    viewByDept();
+                case "ADD ROLE":
+                    addRole();
                     break;
-                case "View employees by manager":
-                    viewByManager();
-                    break;
-                case "Add employee":
+                case "ADD EMPLOYEE":
                     addEmployee();
                     break;
-                case "Remove Employee":
-                    removeEmployee();
+                case "VIEW DEPARTMENTS":
+                    viewDepartment();
                     break;
-                case "Update Employee":
+                case "VIEW ROLES":
+                    viewRoles();
+                    break;
+                case "VIEW EMPLOYEES":
+                    viewEmployees();
+                    break;
+                case "UPDATE EMPLOYEE ROLES":
                     updateEmployee();
                     break;
-                case "exit":
+                case "EXIT":
                     connection.end();
                     break;
             }
     })
   }
 
-function viewEmployees(){
-      console.log("view employees")
-      askUser();
+function addDepartment(){
+      inquirer.prompt([
+          {
+                type: "input",
+                name: "departmentName",
+                message: "What is the name of the department you would like to add?"
+          }
+      ]).then(answer=>{
+          connection.query(
+            "INSERT INTO departments SET ?",
+            {
+                name: answer.departmentName,
+            }
+          ) 
+          askUser();
+      }) 
 }
 
-function viewByDept(){
-    console.log("view employees by dept")
+function addRole(){
+    console.log("add role")
     askUser();
-}
-
-function viewByManager(){
-        console.log("view employees by manager")
-        askUser();
 }
 
 function addEmployee(){
-    console.log("add employee")
+        console.log("add employee")
+        askUser();
+}
+
+function viewDepartment(){
+    console.log("view dept")
     askUser();
 }
 
-function removeEmployee(){
-    console.log("remove employees")
+function viewRoles(){
+    console.log("view roles")
+    askUser();
+}
+
+function viewEmployees(){
+    console.log("view employees")
     askUser();
 }
 
