@@ -114,8 +114,39 @@ function addRole(){
 }
 
 function addEmployee(){
-        console.log("add employee")
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "firstName",
+            message: "What is the first name of the employee you would like to add?"
+        },
+        {
+            type: "input",
+            name: "lastName",
+            message: "What is the last name of the employee you would like to add?"
+        },
+        {
+            type: "input",
+            name: "roleId",
+            message: "what is the role ID for this employee?"
+        },
+        {
+            type: "input",
+            name: "managerId",
+            message: "What is the manager ID for this employee?"
+        }
+    ]).then(answers=>{
+        connection.query(
+          "INSERT INTO employees SET ?",
+          {
+              first_name: answers.firstName,
+              last_name: answers.lastName,
+              role_id: answers.roleId,
+              manager_id: answers.managerId
+          }
+        ) 
         askUser();
+    }) 
 }
 
 function viewDepartment(){
