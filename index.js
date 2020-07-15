@@ -135,35 +135,30 @@ function addRole(){
                     return choiceArray;
                 }
             }
-        ]).then(({roleTitle})=>{
-            console.log(`sorry couldn't add ${roleTitle} role`)
-            //TODO:
-            // connection.query(
-            // //   "INSERT INTO roles SET ?",
-            // //   {
-            // //     //   title: answers.roleTitle,
-            //     //   salary: answers.salary,
-            //     //   department_id: answers.departmentId
-
-            //     //   department_id: connection.query("SELECT id FROM department WHERE name = ?", [answers.department_id], function(err,res){
-            //     //       if (err) throw err; 
-            //     //       return res
-            //     //   }
-            //     //   )
-                
-            //   }
-            //   , function (err, res){
-            //       if (err) throw err;
-            //       console.table(res)
-                  askUser();
-        }
-        ) 
-            
+        ]).then((answers)=>{
+            connection.query("SELECT id FROM departments WHERE name = ?", [answers.departmentId], function(err,res){
+                if (err) throw err; 
+                connection.query(
+                    "INSERT INTO roles SET ?",
+                    {
+                        title: answers.roleTitle,
+                        salary: answers.salary,
+                        department_id: answers.departmentId,
+                        department_id: res[0].id
+                    
+                    }
+                    , function (err, res){
+                        if (err) throw err;
+                        console.table(res)
+                        askUser();
+                    }
+                ) 
+            }
+            )  
     }) 
+    }
+    )
 }
-    // )
-    
-// }
 
 function addEmployee(){
     connection.query("SELECT title, COUNT(title) FROM employees_db.roles GROUP BY title HAVING COUNT(title)>1", function(err,res){
