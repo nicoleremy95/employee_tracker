@@ -143,7 +143,6 @@ function addRole(){
                     {
                         title: answers.roleTitle,
                         salary: answers.salary,
-                        department_id: answers.departmentId,
                         department_id: res[0].id
                     
                     }
@@ -189,23 +188,26 @@ function addEmployee(){
                         return choiceArrayEmp;
                 }
             }
-        ]).then(({firstName})=>{
-            console.log(`sorry couldn't add ${firstName} right now`)
+        ]).then((answers)=>{
+           
             //TODO:
-            // connection.query(
-                
-            //     "INSERT INTO employees SET ?",
-            //     {
-            //         first_name: answers.firstName,
-            //         last_name: answers.lastName,
-            //         role_id: answers.roleId,
-            //         // manager_id: answers.managerId
-            //     }, function (err,res){
-            //         if (err) throw err; 
-            //         console.table(res)
+            connection.query("SELECT id FROM roles WHERE title = ?", [answers.roleId], function(err,res){
+                if (err) throw err; 
+                console.log(res[0].id)
+                connection.query(
+                "INSERT INTO employees SET ?",
+                {
+                    first_name: answers.firstName,
+                    last_name: answers.lastName,
+                    role_id: res[0].id,
+                    // manager_id: answers.managerId
+                }, function (err,res){
+                    if (err) throw err; 
+                    console.table(res)
                     askUser();
-            //     }
-            // ) 
+                }
+                )
+            }) 
         } )
     })
 }   
