@@ -1,7 +1,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer")
+const queries = require("./lib/queries.js")
 
-const mysqlSelect = "SELECT * FROM ??"; 
+ 
 
 
 var connection = mysql.createConnection({
@@ -109,9 +110,13 @@ function addRole(){
               title: answers.roleTitle,
               salary: answers.salary,
               department_id: answers.departmentId
+          }, function (err, res){
+              if (err) throw err;
+              console.table(res)
+              askUser();
           }
         ) 
-        askUser();
+        
     }) 
 }
 
@@ -139,15 +144,19 @@ function addEmployee(){
         }
     ]).then(answers=>{
         connection.query(
+            
           "INSERT INTO employees SET ?",
           {
               first_name: answers.firstName,
               last_name: answers.lastName,
               role_id: answers.roleId,
               manager_id: answers.managerId
+          }, function (err,res){
+              if (err) throw err; 
+              console.table(res)
+              askUser();
           }
         ) 
-        askUser();
     }) 
 }
 
@@ -165,16 +174,43 @@ function viewDepartment(){
 }
 
 function viewRoles(){
-    console.log("view roles")
-    askUser();
+    connection.query(
+        "SELECT * FROM roles", function (err, res){
+            if (err) throw err;
+            console.log("==============================")
+            console.table(res)
+            console.log("==============================")
+            askUser();
+        }
+     )
 }
 
 function viewEmployees(){
-    console.log("view employees")
-    askUser();
+    connection.query(
+        "SELECT * FROM roles", function (err, res){
+            if (err) throw err;
+            console.log("==============================")
+            console.table(res)
+            console.log("==============================")
+            askUser();
+        }
+     )
 }
 
 function updateEmployee(){
-    console.log("update employees")
-    askUser();
+    connection.query(
+        "UPDATE employees WHERE ?", 
+        [
+            {
+              first_name:   
+            }
+        ]
+        function (err, res){
+            if (err) throw err;
+            console.log("==============================")
+            console.table(res)
+            console.log("==============================")
+            askUser();
+        }
+     )
 }
