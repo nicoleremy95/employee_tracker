@@ -252,7 +252,7 @@ function viewEmployees(){
 
 function updateEmployee(){
     connection.query(
-        "SELECT * FROM employees", function (err, res){
+        "SELECT * FROM employees", function (err, res){ 
             if (err) throw err;
             inquirer.prompt([
                 {
@@ -289,24 +289,29 @@ function updateEmployee(){
                                 }
                             }
                             
-                        ]).then(function({employeeRole}){
-                            console.log(`sorry we could not update ${employeeName} to have ${employeeRole} role`)
-                            //TODO: create an UPDATE query based on employeeName and employeeRole
-                            // connection.query("UPDATE employees SET last_name = ? WHERE first_name = ?", [employeeRole, employeeName], function(err, res){
-                            //     if (err) throw err;
-                            //     console.table(res)
-                                askUser();
-                            // })
+                        ]).then(function(answer){
+                            connection.query("SELECT id FROM roles WHERE title = ?", [answer.employeeRole], function(err,res){
+                                if (err) throw err; 
+                                console.log(res[0].id)
+                
+                                connection.query("UPDATE employees SET role_id = ? WHERE first_name = ?", [res[0].id, employeeName], function(err, res){
+                                    if (err) throw err;
+                                    console.table(res)
+                                    askUser();
+                                })
                         })
+                        })
+                
                     }
                 )
-            })
-        }
+            }
        
         
-    )
+            )
     
      
+        }
+    )
 }
 
 function deleteDepartments(){
