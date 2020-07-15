@@ -31,7 +31,7 @@ function askUser(){
         type: "list",
         name: "userChoice",
         message: "what would yo like to do?",
-        choices: ["ADD DEPARTMENT", "ADD ROLE", "ADD EMPLOYEE", "VIEW DEPARTMENTS", "VIEW ROLES", "VIEW EMPLOYEES", "UPDATE EMPLOYEE ROLES", "EXIT"]
+        choices: ["ADD DEPARTMENT", "ADD ROLE", "ADD EMPLOYEE", "VIEW DEPARTMENTS", "VIEW ROLES", "VIEW EMPLOYEES", "UPDATE EMPLOYEE ROLES", "DELETE DEPARTMENTS", "DELETE ROLES", "DELETE EMPLOYEES", "EXIT"]
 
     }
     ).then (function ({userChoice}){
@@ -60,6 +60,15 @@ function askUser(){
                 break;
             case "UPDATE EMPLOYEE ROLES":
                 updateEmployee();
+                break;
+            case "DELETE DEPARTMENTS":
+                deleteDepartments();
+                break;
+            case "DELETE ROLES":
+                 deleteRoles();
+                break;
+            case "DELETE EMPLOYEES":
+                deleteEmployees();
                 break;
             case "EXIT":
                 connection.end();
@@ -113,31 +122,35 @@ function addRole(){
                     return choiceArray;
                 }
             }
-        ]).then(answers=>{
-            console.log(answers)
-            connection.query(
-              "INSERT INTO roles SET ?",
-              {
-                  title: answers.roleTitle,
-                  salary: answers.salary,
-                  department_id: answers.departmentId
-                //   department_id: connection.query("SELECT id FROM department WHERE name = ?", [answers.department_id], function(err,res){
-                //       if (err) throw err; 
-                //       return res
-                //   }
-                //   )
+        ]).then(({roleTitle})=>{
+            console.log(`sorry couldn't add ${roleTitle} role`)
+            //TODO:
+            // connection.query(
+            // //   "INSERT INTO roles SET ?",
+            // //   {
+            // //     //   title: answers.roleTitle,
+            //     //   salary: answers.salary,
+            //     //   department_id: answers.departmentId
+
+            //     //   department_id: connection.query("SELECT id FROM department WHERE name = ?", [answers.department_id], function(err,res){
+            //     //       if (err) throw err; 
+            //     //       return res
+            //     //   }
+            //     //   )
                 
-              }, function (err, res){
-                  if (err) throw err;
-                  console.table(res)
+            //   }
+            //   , function (err, res){
+            //       if (err) throw err;
+            //       console.table(res)
                   askUser();
-              }
-            ) 
+        }
+        ) 
             
-        }) 
-    })
-    
+    }) 
 }
+    // )
+    
+// }
 
 function addEmployee(){
     connection.query("SELECT title, COUNT(title) FROM employees_db.roles GROUP BY title HAVING COUNT(title)>1", function(err,res){
@@ -166,21 +179,23 @@ function addEmployee(){
                         return choiceArrayEmp;
                 }
             }
-        ]).then(answers=>{
-            connection.query(
+        ]).then(({firstName})=>{
+            console.log(`sorry couldn't add ${firstName} right now`)
+            //TODO:
+            // connection.query(
                 
-                "INSERT INTO employees SET ?",
-                {
-                    first_name: answers.firstName,
-                    last_name: answers.lastName,
-                    role_id: answers.roleId,
-                    // manager_id: answers.managerId
-                }, function (err,res){
-                    if (err) throw err; 
-                    console.table(res)
+            //     "INSERT INTO employees SET ?",
+            //     {
+            //         first_name: answers.firstName,
+            //         last_name: answers.lastName,
+            //         role_id: answers.roleId,
+            //         // manager_id: answers.managerId
+            //     }, function (err,res){
+            //         if (err) throw err; 
+            //         console.table(res)
                     askUser();
-                }
-            ) 
+            //     }
+            // ) 
         } )
     })
 }   
@@ -200,7 +215,7 @@ function viewDepartment(){
 
 function viewRoles(){
     connection.query(
-        "SELECT roles.title, roles.salary, roles.department_id, departments.name FROM roles INNER JOIN departments ON roles.department_id = departments.id", function(err, res){
+        "SELECT roles.id, roles.title, roles.salary, roles.department_id, departments.name FROM roles INNER JOIN departments ON roles.department_id = departments.id", function(err, res){
             if (err) throw err;
             console.log("==============================")
             console.table(res)
@@ -212,7 +227,7 @@ function viewRoles(){
 
 function viewEmployees(){
     connection.query(
-        "SELECT employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id, departments.name FROM departments INNER JOIN roles ON roles.department_id = departments.id INNER JOIN employees ON employees.role_id = roles.id;", function(err,res){
+        "SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id, departments.name FROM departments INNER JOIN roles ON roles.department_id = departments.id INNER JOIN employees ON employees.role_id = roles.id;", function(err,res){
             if (err) throw err;
             console.log("==============================")
             console.table(res)
@@ -263,12 +278,13 @@ function viewEmployees(){
                             }
                             
                         ]).then(function({employeeRole}){
-                            console.log(employeeRole)
+                            console.log(`sorry we could not update ${employeeName} to have ${employeeRole} role`)
                             //TODO: create an UPDATE query based on employeeName and employeeRole
-                            connection.query("UPDATE employees SET last_name = ? WHERE first_name = ?", [employeeRole, employeeName], function(err, res){
-                                if (err) throw err;
-                                console.table(res)
-                            })
+                            // connection.query("UPDATE employees SET last_name = ? WHERE first_name = ?", [employeeRole, employeeName], function(err, res){
+                            //     if (err) throw err;
+                            //     console.table(res)
+                                askUser();
+                            // })
                         })
                     }
                 )
@@ -279,4 +295,34 @@ function viewEmployees(){
     )
     
      
+}
+
+function deleteDepartments(){
+    connection.query(
+        "SELECT * FROM departments", function (err, res){
+            if (err) throw err;
+            inquirer.prompt([
+                {
+                    type: "list",
+                    name: "userChoice",
+                    message: "Which userChoice would you like to delete?",
+                    choices: function(){
+                        let choiceArray = [];
+                        for (i=0; i<res.length; i++){
+                            choiceArray.push(res[i].name)
+                        }
+                        return choiceArray;
+                    } 
+                }
+            ]).then(function({userChoice}){
+                
+                console.log(`cannot delete ${userChoice} right now` )
+                // connection.query("DELETE FROM departments WHERE departments.name = ? ", [userChoice], function(err, res){
+                //     if (err) throw err;
+                //     console.table("this is the department that has been deleted", res)
+                // })
+                askUser();
+            })
+        }
+    )
 }
