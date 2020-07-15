@@ -20,7 +20,7 @@ CREATE TABLE departments (
 CREATE TABLE roles (
     id INT NOT NULL AUTO_INCREMENT,
     title VARCHAR(100) NOT NULL,
-    salary DECIMAL NOT NULL,
+    salary DECIMAL(10,3) NOT NULL,
     department_id INT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (department_id) REFERENCES departments(id)
@@ -43,3 +43,7 @@ USE employees_db;
 SELECT roles.title, roles.salary, roles.department_id
 FROM roles INNER JOIN departments ON roles.department_id = departments.id 
 WHERE roles.department_id = 1; 
+
+--selects all employee data 
+USE employees_db;
+SELECT employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id FROM employees INNER JOIN roles ON employees.role_id = roles.id

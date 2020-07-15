@@ -25,48 +25,48 @@ var connection = mysql.createConnection({
     askUser();
   });
 
-  function askUser(){
-      inquirer.prompt(
-        {
-            type: "list",
-            name: "userChoice",
-            message: "what would yo like to do?",
-            choices: ["ADD DEPARTMENT", "ADD ROLE", "ADD EMPLOYEE", "VIEW DEPARTMENTS", "VIEW ROLES", "VIEW EMPLOYEES", "UPDATE EMPLOYEE ROLES", "EXIT"]
+function askUser(){
+    inquirer.prompt(
+    {
+        type: "list",
+        name: "userChoice",
+        message: "what would yo like to do?",
+        choices: ["ADD DEPARTMENT", "ADD ROLE", "ADD EMPLOYEE", "VIEW DEPARTMENTS", "VIEW ROLES", "VIEW EMPLOYEES", "UPDATE EMPLOYEE ROLES", "EXIT"]
 
+    }
+    ).then (function ({userChoice}){
+        console.log(userChoice)
+        switch(userChoice){
+            default:
+                console.log("done for now")
+                break;
+            case "ADD DEPARTMENT":
+                addDepartment();
+                break;
+            case "ADD ROLE":
+                addRole();
+                break;
+            case "ADD EMPLOYEE":
+                addEmployee();
+                break;
+            case "VIEW DEPARTMENTS":
+                viewDepartment();
+                break;
+            case "VIEW ROLES":
+                viewRoles();
+                break;
+            case "VIEW EMPLOYEES":
+                viewEmployees();
+                break;
+            case "UPDATE EMPLOYEE ROLES":
+                updateEmployee();
+                break;
+            case "EXIT":
+                connection.end();
+                break;
         }
-        ).then (function ({userChoice}){
-            console.log(userChoice)
-            switch(userChoice){
-                default:
-                    console.log("done for now")
-                    break;
-                case "ADD DEPARTMENT":
-                    addDepartment();
-                    break;
-                case "ADD ROLE":
-                    addRole();
-                    break;
-                case "ADD EMPLOYEE":
-                    addEmployee();
-                    break;
-                case "VIEW DEPARTMENTS":
-                    viewDepartment();
-                    break;
-                case "VIEW ROLES":
-                    viewRoles();
-                    break;
-                case "VIEW EMPLOYEES":
-                    viewEmployees();
-                    break;
-                case "UPDATE EMPLOYEE ROLES":
-                    updateEmployee();
-                    break;
-                case "EXIT":
-                    connection.end();
-                    break;
-            }
-    })
-  }
+})
+}
 
 function addDepartment(){
       inquirer.prompt([
@@ -200,7 +200,7 @@ function viewDepartment(){
 
 function viewRoles(){
     connection.query(
-        "SELECT * FROM roles", function (err, res){
+        "SELECT roles.title, roles.salary, roles.department_id, departments.name FROM roles INNER JOIN departments ON roles.department_id = departments.id", function(err, res){
             if (err) throw err;
             console.log("==============================")
             console.table(res)
@@ -212,14 +212,15 @@ function viewRoles(){
 
 function viewEmployees(){
     connection.query(
-        "SELECT * FROM employees", function (err, res){
+        "SELECT employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id, departments.name FROM departments INNER JOIN roles ON roles.department_id = departments.id INNER JOIN employees ON employees.role_id = roles.id;", function(err,res){
             if (err) throw err;
             console.log("==============================")
             console.table(res)
             console.log("==============================")
             askUser();
         }
-     )
+     ) 
+     
 }
 
  function updateEmployee(){
