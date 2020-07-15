@@ -227,7 +227,7 @@ function viewRoles(){
 
 function viewEmployees(){
     connection.query(
-        "SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id, departments.name FROM departments INNER JOIN roles ON roles.department_id = departments.id INNER JOIN employees ON employees.role_id = roles.id;", function(err,res){
+        "SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id, departments.name FROM departments INNER JOIN roles ON roles.department_id = departments.id INNER JOIN employees ON employees.role_id = roles.id", function(err,res){
             if (err) throw err;
             console.log("==============================")
             console.table(res)
