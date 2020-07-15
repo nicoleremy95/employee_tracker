@@ -87,78 +87,103 @@ function addDepartment(){
 }
 
 function addRole(){
-    inquirer.prompt([
-        {
-              type: "input",
-              name: "roleTitle",
-              message: "What is the name of the role you would like to add?"
-        },
-        {
-            type: "input",
-            name: "salary",
-            message: "What is the salary of this role?"
-        },
-        {
-            type: "input",
-            name: "departmentId",
-            message: "what is the department id for this role?"
-        }
-    ]).then(answers=>{
-        connection.query(
-          "INSERT INTO roles SET ?",
-          {
-              title: answers.roleTitle,
-              salary: answers.salary,
-              department_id: answers.departmentId
-          }, function (err, res){
-              if (err) throw err;
-              console.table(res)
-              askUser();
-          }
-        ) 
-        
-    }) 
+    connection.query("SELECT * FROM departments", function(err,res){
+        if (err) throw err;
+
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "roleTitle",
+                message: "What is the name of the role you would like to add?"
+            },
+            {
+                type: "input",
+                name: "salary",
+                message: "What is the salary of this role?"
+            },
+            {
+                type: "list",
+                name: "departmentId",
+                message: "which department?",
+                choices: function(){
+                    let choiceArray = [];
+                    for (let i =0; i<res.length; i++){
+                        choiceArray.push(res[i].name)
+                    }
+                    return choiceArray;
+                }
+            }
+        ]).then(answers=>{
+            console.log(answers)
+            connection.query(
+              "INSERT INTO roles SET ?",
+              {
+                  title: answers.roleTitle,
+                  salary: answers.salary,
+                  department_id: answers.departmentId
+                //   department_id: connection.query("SELECT id FROM department WHERE name = ?", [answers.department_id], function(err,res){
+                //       if (err) throw err; 
+                //       return res
+                //   }
+                //   )
+                
+              }, function (err, res){
+                  if (err) throw err;
+                  console.table(res)
+                  askUser();
+              }
+            ) 
+            
+        }) 
+    })
+    
 }
 
 function addEmployee(){
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "firstName",
-            message: "What is the first name of the employee you would like to add?"
-        },
-        {
-            type: "input",
-            name: "lastName",
-            message: "What is the last name of the employee you would like to add?"
-        },
-        {
-            type: "input",
-            name: "roleId",
-            message: "what is the role ID for this employee?"
-        },
-        {
-            type: "input",
-            name: "managerId",
-            message: "What is the manager ID for this employee?"
-        }
-    ]).then(answers=>{
-        connection.query(
-            
-          "INSERT INTO employees SET ?",
-          {
-              first_name: answers.firstName,
-              last_name: answers.lastName,
-              role_id: answers.roleId,
-              manager_id: answers.managerId
-          }, function (err,res){
-              if (err) throw err; 
-              console.table(res)
-              askUser();
-          }
-        ) 
-    }) 
-}
+    connection.query("SELECT title, COUNT(title) FROM employees_db.roles GROUP BY title HAVING COUNT(title)>1", function(err,res){
+        if (err) throw err;
+
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "firstName",
+                message: "What is the first name of the employee you would like to add?"
+            },
+            {
+                type: "input",
+                name: "lastName",
+                message: "What is the last name of the employee you would like to add?"
+            },
+            {
+                type: "list",
+                name: "roleId",
+                message: "what is the role  for this employee?",
+                choices: function(){
+                    let choiceArrayEmp = [];
+                        for (let i =0; i<res.length; i++){
+                            choiceArrayEmp.push(res[i].title)
+                        }
+                        return choiceArrayEmp;
+                }
+            }
+        ]).then(answers=>{
+            connection.query(
+                
+                "INSERT INTO employees SET ?",
+                {
+                    first_name: answers.firstName,
+                    last_name: answers.lastName,
+                    role_id: answers.roleId,
+                    // manager_id: answers.managerId
+                }, function (err,res){
+                    if (err) throw err; 
+                    console.table(res)
+                    askUser();
+                }
+            ) 
+        } )
+    })
+}   
 
 function viewDepartment(){
     connection.query(
@@ -187,7 +212,7 @@ function viewRoles(){
 
 function viewEmployees(){
     connection.query(
-        "SELECT * FROM roles", function (err, res){
+        "SELECT * FROM employees", function (err, res){
             if (err) throw err;
             console.log("==============================")
             console.table(res)
@@ -197,20 +222,20 @@ function viewEmployees(){
      )
 }
 
-function updateEmployee(){
-    connection.query(
-        "UPDATE employees WHERE ?", 
-        [
-            {
-              first_name:   
-            }
-        ]
-        function (err, res){
-            if (err) throw err;
-            console.log("==============================")
-            console.table(res)
-            console.log("==============================")
-            askUser();
-        }
-     )
-}
+// function updateEmployee(){
+//     connection.query(
+//         "UPDATE employees WHERE ?", 
+//         [
+//             {
+//               first_name:   
+//             }
+//         ]
+//         function (err, res){
+//             if (err) throw err;
+//             console.log("==============================")
+//             console.table(res)
+//             console.log("==============================")
+//             askUser();
+//         }
+//      )
+// }
