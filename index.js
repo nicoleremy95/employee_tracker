@@ -222,20 +222,60 @@ function viewEmployees(){
      )
 }
 
-// function updateEmployee(){
-//     connection.query(
-//         "UPDATE employees WHERE ?", 
-//         [
-//             {
-//               first_name:   
-//             }
-//         ]
-//         function (err, res){
-//             if (err) throw err;
-//             console.log("==============================")
-//             console.table(res)
-//             console.log("==============================")
-//             askUser();
-//         }
-//      )
-// }
+ function updateEmployee(){
+    connection.query(
+        "SELECT * FROM employees", function (err, res){
+            if (err) throw err;
+            inquirer.prompt([
+                {
+                    type: "list",
+                    name: "employeeName",
+                    message: "which employee would you like to update?",
+                    choices: function (){
+                        let choiceArray = [];
+                        for (i=0; i<res.length; i++){
+                            choiceArray.push(res[i].first_name)
+                        }
+                        return choiceArray;
+                    }
+                }
+                
+            ]).then(function ({employeeName}){
+                console.log(employeeName)
+                
+                connection.query(
+                    "SELECT title, COUNT(title) FROM employees_db.roles GROUP BY title HAVING COUNT(title)>1", function(err, res){
+                        if (err) throw err;
+                        inquirer.prompt([
+                            
+                            {
+                                type: "list",
+                                name: "employeeRole",
+                                message: "which role?",
+                                choices: function(){
+                                    let choiceArrayRole = [];
+                                    for (let i =0; i<res.length; i++){
+                                        choiceArrayRole.push(res[i].title)
+                                    }
+                                    return choiceArrayRole;
+                                }
+                            }
+                            
+                        ]).then(function({employeeRole}){
+                            console.log(employeeRole)
+                            //TODO: create an UPDATE query based on employeeName and employeeRole
+                            connection.query("UPDATE employees SET last_name = ? WHERE first_name = ?", [employeeRole, employeeName], function(err, res){
+                                if (err) throw err;
+                                console.table(res)
+                            })
+                        })
+                    }
+                )
+            })
+        }
+       
+        
+    )
+    
+     
+}
