@@ -1,8 +1,12 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer")
-const queries = require("./lib/queries.js")
+// const queries = require("./lib/queries.js")
 
- 
+const validatorStr = async (input) => {
+    if (input ==='' || isNaN(input)===false) {
+        console.log('Please provide a response with letters') ;
+    } else return true; 
+}
 
 
 var connection = mysql.createConnection({
@@ -82,7 +86,8 @@ function addDepartment(){
           {
                 type: "input",
                 name: "departmentName",
-                message: "What is the name of the department you would like to add?"
+                message: "What is the name of the department you would like to add?",
+                validate: validatorStr
           }
       ]).then(answer=>{
           connection.query(
@@ -103,7 +108,8 @@ function addRole(){
             {
                 type: "input",
                 name: "roleTitle",
-                message: "What is the name of the role you would like to add?"
+                message: "What is the name of the role you would like to add?",
+                validate: validatorStr
             },
             {
                 type: "input",
@@ -160,12 +166,14 @@ function addEmployee(){
             {
                 type: "input",
                 name: "firstName",
-                message: "What is the first name of the employee you would like to add?"
+                message: "What is the first name of the employee you would like to add?",
+                validate: validatorStr
             },
             {
                 type: "input",
                 name: "lastName",
-                message: "What is the last name of the employee you would like to add?"
+                message: "What is the last name of the employee you would like to add?",
+                validate: validatorStr
             },
             {
                 type: "list",
@@ -238,7 +246,7 @@ function viewEmployees(){
      
 }
 
- function updateEmployee(){
+function updateEmployee(){
     connection.query(
         "SELECT * FROM employees", function (err, res){
             if (err) throw err;
