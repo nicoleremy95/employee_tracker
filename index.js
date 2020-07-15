@@ -305,8 +305,6 @@ function updateEmployee(){
                     }
                 )
             }
-       
-        
             )
     
      
@@ -322,7 +320,7 @@ function deleteDepartments(){
                 {
                     type: "list",
                     name: "userChoice",
-                    message: "Which userChoice would you like to delete?",
+                    message: "Which department would you like to delete?",
                     choices: function(){
                         let choiceArray = [];
                         for (i=0; i<res.length; i++){
@@ -331,15 +329,126 @@ function deleteDepartments(){
                         return choiceArray;
                     } 
                 }
-            ]).then(function({userChoice}){
+            ]).then(function(answer){
+                console.log(answer.userChoice)
                 
-                console.log(`cannot delete ${userChoice} right now` )
-                // connection.query("DELETE FROM departments WHERE departments.name = ? ", [userChoice], function(err, res){
-                //     if (err) throw err;
-                //     console.table("this is the department that has been deleted", res)
-                // })
-                askUser();
+                // console.log(`cannot delete ${userChoice} right now` )
+                connection.query("DELETE FROM departments WHERE departments.name = ? ", [answer.userChoice], function(err, res){
+                    if (err) throw err;
+                    console.table("this is the department that has been deleted", res)
+                    askUser();
+                })
+                
             })
         }
     )
 }
+
+
+
+
+
+
+
+
+// function updateEmployee(){
+   
+//     connection.query(
+//         "SELECT employees.first_name FROM employees", function (err, res){ 
+//             console.log(res)
+//             if (err) throw err;
+//             inquirer.prompt([
+//                 {
+//                     type: "list",
+//                     name: "employeeName",
+//                     message: "which employee would you like to update?",
+//                     choices: function (){
+//                         let choiceArray = [];
+//                         for (i=0; i<res.length; i++){
+//                             choiceArray.push(res[i].first_name)
+                        
+//                         }
+//                         return choiceArray;
+//                     }
+//                 }
+                
+//             ]).then(function (employeeName){
+//                 connection.query(
+//                     "SELECT title, COUNT(title) FROM employees_db.roles GROUP BY title HAVING COUNT(title)>1"
+//                     // "SELECT * FROM roles"
+//                     , function(err, res){
+//                         console.log(res)
+//                         if (err) throw err;
+//                         inquirer.prompt([
+                            
+//                             {
+//                                 type: "list",
+//                                 name: "employeeRole",
+//                                 message: "which role?",
+//                                 choices: function (){
+//                                     let choiceArray = [];
+//                                     for (i=0; i<res.length; i++){
+//                                         choiceArray.push(res[i].title)
+                                    
+//                                     }
+//                                     return choiceArray;
+//                                 }
+//                             }
+                            
+//                         ]).then(function(role){
+//                             connection.query(
+//                                 "SELECT name FROM departments", function(err, res){
+//                                     if (err) throw err;
+//                                     inquirer.prompt([
+//                                         {
+//                                             type: "list",
+//                                             name: "departmentChoice",
+//                                             message: "what is this persons department?",
+//                                             choices: function (){
+//                                                 let choiceArray = [];
+//                                                 for (i=0; i<res.length; i++){
+//                                                     choiceArray.push(res[i].name)
+                                                
+//                                                 }
+//                                                 return choiceArray;
+//                                             }
+//                                         }
+//                                     ]).then(function(department){
+//                                         connection.query(
+//                                             "SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, roles.title, roles.salary, roles.department_id, departments.name FROM departments INNER JOIN roles ON roles.department_id = departments.id INNER JOIN employees ON employees.role_id = roles.id", function(err, res){
+//                                                 if (err) throw err;
+//                                                 connection.query(
+//                                                     "UPDATE employees SET role = ? AND department = ? WHERE first_name = ?", [role, department, employeeName ]
+//                                                 )
+//                                             }
+//                                         )
+//                                     })
+//                                 }
+//                             )
+
+
+
+
+//                         //     connection.query("SELECT id FROM roles WHERE title = ?", [answer.employeeRole], function(err,res){
+//                         //         if (err) throw err; 
+//                         //         console.log(res[0].id)
+                
+//                         //         connection.query("UPDATE employees SET role_id = ? WHERE first_name = ?", [res[0].id, employeeName], function(err, res){
+//                         //             if (err) throw err;
+//                         //             console.table(res)
+//                         //             askUser();
+//                         //         })
+//                         // })
+//                         })
+                
+//                     }
+//                 )
+//             }
+       
+        
+//             )
+    
+     
+//         }
+//     )
+// }
