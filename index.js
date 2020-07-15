@@ -8,6 +8,12 @@ const validatorStr = async (input) => {
     } else return true; 
 }
 
+const validatorNum = async (input) => {
+    if (input ==='' || isNaN(input)===true) {
+        console.log('Please provide a response with numbers') ;
+    } else return true; 
+}
+
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -114,7 +120,8 @@ function addRole(){
             {
                 type: "input",
                 name: "salary",
-                message: "What is the salary of this role?"
+                message: "What is the salary of this role?",
+                validate: validatorNum
             },
             {
                 type: "list",
