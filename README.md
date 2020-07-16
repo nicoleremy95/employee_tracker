@@ -2,11 +2,6 @@
 employee tracker cli; inquirer and  mysql 
 
 
-
-# template_engine_employee_summary
-hw 7 template engine employee summary 
-
-
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ### Description
