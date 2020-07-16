@@ -312,34 +312,4 @@ function updateEmployee(){
     )
 }
 
-function deleteDepartments(){
-    connection.query(
-        "SELECT * FROM departments", function (err, res){
-            if (err) throw err;
-            inquirer.prompt([
-                {
-                    type: "list",
-                    name: "userChoice",
-                    message: "Which department would you like to delete?",
-                    choices: function(){
-                        let choiceArray = [];
-                        for (i=0; i<res.length; i++){
-                            choiceArray.push(res[i].name)
-                        }
-                        return choiceArray;
-                    } 
-                }
-            ]).then(function(answer){
-                console.log(answer.userChoice)
-                
-                // console.log(`cannot delete ${userChoice} right now` )
-                connection.query("DELETE FROM departments WHERE departments.name = ? ", [answer.userChoice], function(err, res){
-                    if (err) throw err;
-                    console.table("this is the department that has been deleted", res)
-                    askUser();
-                })
-                
-            })
-        }
-    )
-}
+

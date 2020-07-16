@@ -45,17 +45,6 @@ To handle edge cases, I added a validate property on each inqurier prompt object
 
 ![step 1](assets/step5.png)
 
-### Step 6
-
-![step 1](assets/step6.png)
-
-### Step 7
-
-![step 1](assets/step7.png)
-
-### Step 8
-
-![step 1](assets/step8.png)
 
 
 ### Installation
@@ -80,6 +69,6 @@ Please make sure to update tests as appropriate.
 1. [Github](https://github.com/nicoleremy95)
 
 ### Link to Video of Application
-1. [EMPLOYEE TRACKER](https://drive.google.com/file/d/1XIR5b5sHZqeSox2YTBNKxbk67N34_sH-/view?usp=sharing)
+1. [EMPLOYEE TRACKER](https://drive.google.com/file/d/1QwCm1s24y60vBc7kDLJNDbWrIdjgMnMF/view)
     
     
